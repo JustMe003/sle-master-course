@@ -1,0 +1,4 @@
+form "Empty form" {
+    "question"
+        testVar: boolean
+}

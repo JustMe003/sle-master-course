@@ -1,6 +1,8 @@
 module Resolve
 
 import Syntax;
+import ParseTree;
+import IO;
 
 /*
  * Name resolution for QL
@@ -20,15 +22,26 @@ alias RefGraph = tuple[
   Use uses, 
   Def defs, 
   UseDef useDef
-]; 
+];
 
 RefGraph resolve(start[Form] f) = <us, ds, us o ds>
   when Use us := uses(f), Def ds := defs(f);
 
 Use uses(start[Form] f) {
-  return {}; 
+  Use u = {};
+  for (/var(Id name) := f) {
+    u += {<name.src, "<name>">};
+  }
+  return u;
 }
 
 Def defs(start[Form] f) {
-  return {}; 
+  Def d = {};
+  for (/answerable(Str _, Id name, Type _) := f) {
+    d += {<"<name>", name.src>};
+  }
+  for (/computed(Str _, Id name, Type _, Expr _) := f) {
+    d += {<"<name>", name.src>};
+  }
+  return d;
 }

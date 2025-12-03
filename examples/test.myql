@@ -1,0 +1,8 @@
+form "testing" {
+    if (true)
+        "Var" var: integer = 1
+    else if (false)
+        "Var" var: integer = 2
+    else
+        "Var" var: integer = 3
+}
