@@ -10,8 +10,8 @@ machine Doors
         close => closed
     end
 
-    state locked4
-        unlock => closed2
+    state locked
+        unlock => closed
     end
 
 end
