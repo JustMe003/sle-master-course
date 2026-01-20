@@ -2,11 +2,11 @@
 machine Doors
 
     state closed
-        open => opened
+        open => current
         lock => locked
     end
 
-    state opened
+    state current
         close => closed
     end
 
