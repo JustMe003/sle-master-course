@@ -21,11 +21,12 @@ syntax Type
 
 
 // TODO: answerable question, computed question, block, if-then-else
-syntax Question 
+syntax Question
   = ifThen: "if" "(" Expr cond ")" Question then !>> "else"
   | elseThen: "if" "(" Expr cond ")" Question ifThen "else" Question elseThen 
+  // | elseIfThen: "if" "(" Expr ifCond ")" Question ifThen  ("else" "if" "(" Expr ifElseCond ")" Question elseIfThen )+ ("else" Question elseThen)?
   | answerable: Str Id name ":" Type !>> "="
-  | computed: Str Id name ":" Type "=" Expr 
+  | computed: Str Id name ":" Type "=" Expr
   | block: "{" Question* questions "}"
   ;
 
@@ -33,7 +34,7 @@ syntax Question
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr
-  = var: Id name \ "true" \"false"
+  = var: Id name \ "true" \ "false"
   | literal: Bool bool
   | literal: Int int
   | literal: Str str
