@@ -107,16 +107,32 @@ set[Message] check(computed(Str prompt, Id name, Type t, Expr e), TEnv env) {
 set[Message] check(answerable(Str prompt, Id name, Type t), TEnv env) {
     set[Message] s = {};
     if (size("<prompt>") <= 2) s += {warning("Empty prompt", prompt.src)};
+    return s;
+}
 
+set[Message] check(repeat(Expr e, Question q), TEnv env) {
+    set[Message] s = {};
+    Type t = typeOf(e, env);
+    s += check(e, env);
+    if ("<t>" != "integer" && "<t>" != "*unknown*") s += {error("Repetitions must be a number", e.src)};
+    if (toInt("<e>") < 1) s += {error("Repetitions must be greater than 0", e.src)};
     return s;
 }
 
 set[Message] check(var(Id name), TEnv env) {
     set[Message] s = {};
-    println("<name>" in domain(env));
     if ("<name>" notin domain(env) || <"<name>", (Type)`*unknown*`> in env) s += {error("undefined reference", name.src)};
     return s;
 }
+set[Message] check(index(Id name, Expr e), TEnv env) {
+    set[Message] s = {};
+    if ("<name>" notin domain(env) || <"<name>", (Type)`*unknown*`> in env) s += {error("undefined reference", name.src)};
+    (("<typeOf(e, env)>" != "integer" && "<typeOf(e, env)>" != "*unknown*") 
+    ? {error("Invalid operant to list", e.src)} 
+    : {});
+    return s;
+}
+set[Message] check(listing(Expr *es), TEnv env) = ( {} | it + check(e, env) | e <- es );
 set[Message] check(parentheses(Expr e), TEnv env) = check(e, env);
 set[Message] check(logical(Expr e), TEnv env) =
     (("<typeOf(e, env)>" != "boolean" && "<typeOf(e, env)>" != "*unknown*") 

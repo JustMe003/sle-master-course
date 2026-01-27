@@ -8,15 +8,16 @@ start syntax Form
 
 lexical Str = [\"]![\"]* [\"];
 
-lexical Bool = "true" | "false";
-
 lexical Int = [0-9]+; 
+
+lexical Bool = "true" | "false";
 
 // boolean, integer, string
 syntax Type 
   = "boolean"
   | "integer"
   | "string"
+  | "list[" Type "]"
   ;
 
 
@@ -24,10 +25,10 @@ syntax Type
 syntax Question
   = ifThen: "if" "(" Expr cond ")" Question then !>> "else"
   | elseThen: "if" "(" Expr cond ")" Question ifThen "else" Question elseThen 
-  // | elseIfThen: "if" "(" Expr ifCond ")" Question ifThen  ("else" "if" "(" Expr ifElseCond ")" Question elseIfThen )+ ("else" Question elseThen)?
   | answerable: Str Id name ":" Type !>> "="
   | computed: Str Id name ":" Type "=" Expr
   | block: "{" Question* questions "}"
+  | repeat: "repeat" "(" Expr e ")" Question q
   ;
 
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
@@ -35,9 +36,11 @@ syntax Question
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr
   = var: Id name \ "true" \ "false"
+  | index: Id name "[" Expr e "]"
   | literal: Bool bool
   | literal: Int int
   | literal: Str str
+  | listing: "[" Expr* exprs "," "]"
   | parentheses: "(" Expr e ")"
   > logical: "!" Expr e
   > left (arithmetic: Expr l "*" Expr r

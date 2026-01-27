@@ -32,6 +32,9 @@ Use uses(start[Form] f) {
   for (/var(Id name) := f) {
     u += {<name.src, "<name>">};
   }
+  for (/index(Id name, Expr _) := f) {
+    u += {<name.src, "<name>">};
+  }
   return u;
 }
 

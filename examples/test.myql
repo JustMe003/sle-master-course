@@ -1,4 +1,9 @@
 form "testing" {
-    if (x > 1)
-        "x" x: integer = 2
+    "Repeats" x1: integer
+
+    repeat (x1) {
+        "some numbers" x3: integer
+    }
+
+    "Sum of first 3 numbers" x4: integer = x3[0] + x3[1] + x3[2]
 }
